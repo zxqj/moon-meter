@@ -93,9 +93,9 @@ function App() {
             >
                 {/* Left Column: Controls */}
                 <Card style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                    <CardContent style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    <CardContent style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
                         <div>
-                            <Label htmlFor="bpm" style={{ marginBottom: "0.5rem" }}>BPM</Label>
+                            <Label htmlFor="bpm" style={{marginBottom: "0.5rem"}}>BPM</Label>
                             <Slider
                                 id="bpm"
                                 value={[bpm]}
@@ -106,34 +106,34 @@ function App() {
                             />
                             <span>{bpm}</span>
                         </div>
-                        <div>
-                            <Label htmlFor="frequency" style={{ marginBottom: "0.5rem" }}>Frequency</Label>
-                            <Input
-                                id="frequency"
-                                type="number"
-                                min="2"
-                                value={frequency}
-                                onChange={(e) => setFrequency(Number(e.target.value))}
-                                style={{ maxWidth: "200px" }}
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="leadtime" style={{ marginBottom: "0.5rem" }}>Lead Time</Label>
-                            <Select value={String(leadtime)} onValueChange={(value) => setLeadtime(Number(value))}>
-                                <SelectTrigger id="leadtime" style={{ maxWidth: "200px" }}>
-                                    Lead Time: {leadtime}
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Array.from({ length: frequency }, (_, i) => i + 1).map((value) => (
-                                        <SelectItem key={value} value={String(value)}>
-                                            {value}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        <div style={{display: "flex", gap: "1rem", flexDirection: "row", justifyContent: "space-around"}}>
+                            <div>
+                                <Label htmlFor="frequency" style={{marginBottom: "0.5rem"}}>Frequency</Label>
+                                <Input
+                                    id="frequency"
+                                    type="number"
+                                    min={1}
+                                    defaultValue={8}
+                                    value={frequency}
+                                    onChange={(e) => setFrequency(Number(e.target.value))}
+                                    style={{maxWidth: "70px"}}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="leadtime" style={{marginBottom: "0.5rem"}}>Lead Time</Label>
+                                <Input
+                                    id="leadtime"
+                                    type="number"
+                                    min={1}
+                                    max={frequency}
+                                    value={leadtime}
+                                    onChange={(e) => setLeadtime(Number(e.target.value))}
+                                    style={{maxWidth: "70px"}}
+                                />
+                            </div>
                         </div>
                     </CardContent>
-                    <div style={{ display: "flex", justifyContent: "center", gap: "1rem", padding: "1rem" }}>
+                    <div style={{display: "flex", justifyContent: "center", gap: "1rem", padding: "1rem" }}>
                         <Button onClick={() => setIsPlaying((prev) => !prev)}>
                             {isPlaying ? "Stop" : "Start"}
                         </Button>
@@ -173,6 +173,26 @@ function App() {
                     </CardContent>
                 </Card>
             </div>
+            <Card>
+                <CardContent style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
+                    {/* Existing panels... */}
+                    <div style={{display: "flex", justifyContent: "center", gap: "0.5rem", marginTop: "1rem"}}>
+                        {Array.from({length: frequency}, (_, i) => (
+                            <div
+                                key={i}
+                                style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    borderRadius: "50%",
+                                    backgroundColor: (beatCount % frequency) === i ? "var(--neon-green)" : "var(--muted)",
+                                    transition: "background-color 0.2s ease",
+                                }}
+                            />
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
         </div>
     );
 }

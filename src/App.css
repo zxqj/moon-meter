@@ -44,3 +44,7 @@
 .lime {
     color: hsl(82 84.5% 67.1%)
 }
+
+#frequency button {
+    display: none;
+}
