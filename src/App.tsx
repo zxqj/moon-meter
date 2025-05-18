@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import "./App.css";
 
+// Import the audio file
+const metronomeSound = "/public/Perc_MetronomeQuartz_hi.wav";
+
 const TONES = ["A", "B♭", "B", "C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭"];
 
 function App() {
@@ -24,9 +27,14 @@ function App() {
 
     useEffect(() => {
         let interval = null;
+        const audio = new Audio(metronomeSound); // Create an Audio object
 
         if (isPlaying) {
             interval = setInterval(() => {
+                // Play the sound on every beat
+                audio.currentTime = 0; // Reset the audio to the start
+                audio.play();
+
                 if (beatCount % frequency === 0) {
                     setNextKey((prev) => {
                         const availableTones = TONES.filter((tone) => !excludedKeys.includes(tone));
@@ -59,19 +67,19 @@ function App() {
     };
 
     return (
-        <div style={{display: "flex", flexDirection: "column"}}>
-            <div style={{display: "flex", justifyContent: "start", padding: "0 2rem"}}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "start", padding: "0 2rem" }}>
                 <div className="font-bold lg:inline-block">
-                    <span style={{color: "var(--neon-green)"}}>m</span>
-                    <span style={{color: "var(--neon-pink)"}}>o</span>
-                    <span style={{color: "var(--neon-blue)"}}>o</span>
-                    <span style={{color: "var(--neon-yellow)"}}>n</span>
-                    <span style={{color: "var(--neon-orange)"}}>-</span>
-                    <span style={{color: "var(--neon-green)"}}>m</span>
-                    <span style={{color: "var(--neon-pink)"}}>e</span>
-                    <span style={{color: "var(--neon-blue)"}}>t</span>
-                    <span style={{color: "var(--neon-yellow)"}}>e</span>
-                    <span style={{color: "var(--neon-orange)"}}>r</span>
+                    <span style={{ color: "var(--neon-green)" }}>m</span>
+                    <span style={{ color: "var(--neon-pink)" }}>o</span>
+                    <span style={{ color: "var(--neon-blue)" }}>o</span>
+                    <span style={{ color: "var(--neon-yellow)" }}>n</span>
+                    <span style={{ color: "var(--neon-orange)" }}>-</span>
+                    <span style={{ color: "var(--neon-green)" }}>m</span>
+                    <span style={{ color: "var(--neon-pink)" }}>e</span>
+                    <span style={{ color: "var(--neon-blue)" }}>t</span>
+                    <span style={{ color: "var(--neon-yellow)" }}>e</span>
+                    <span style={{ color: "var(--neon-orange)" }}>r</span>
                 </div>
             </div>
             <div
@@ -84,8 +92,8 @@ function App() {
                 }}
             >
                 {/* Left Column: Controls */}
-                <Card style={{flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
-                    <CardContent style={{display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <Card style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <CardContent style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                         <div>
                             <Label htmlFor="bpm" style={{ marginBottom: "0.5rem" }}>BPM</Label>
                             <Slider
