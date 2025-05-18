@@ -39,6 +39,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+    --font-sans: InterVariable, sans-serif;
+    --neon-green: hsl(82 84.5% 67.1%);
+    --neon-pink: hsl(330 100% 70%);
+    --neon-blue: hsl(200 100% 60%);
+    --neon-yellow: hsl(54 100% 62%);
+    --neon-orange: hsl(24 100% 65%);
 }
 
 :root {
@@ -108,6 +114,7 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.645 0.246 16.439);
+
 }
 
 @layer base {
