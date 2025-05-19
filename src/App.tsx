@@ -14,8 +14,8 @@ const TONES = ["A", "B♭", "B", "C", "D♭", "D", "E♭", "E", "F", "G♭", "G"
 
 function App() {
     const [bpm, setBpm] = useState(120);
-    const [frequency, setFrequency] = useState(4);
-    const [leadtime, setLeadtime] = useState(2);
+    const [frequency, setFrequency] = useState(12);
+    const [leadtime, setLeadtime] = useState(6);
     const [currentKey, setCurrentKey] = useState(null);
     const [nextKey, setNextKey] = useState(TONES[Math.floor(Math.random() * TONES.length)]);
     const [excludedKeys, setExcludedKeys] = useState([]);
@@ -27,21 +27,15 @@ function App() {
 
     useEffect(() => {
         let interval = null;
-        const audio = new Audio(metronomeSound); // Create an Audio object
+        const audio = new Audio(metronomeSound);
 
         if (isPlaying) {
             interval = setInterval(() => {
-                // Play the sound on every beat
-                audio.currentTime = 0; // Reset the audio to the start
+                audio.currentTime = 0;
                 audio.play();
 
-                if (beatCount % frequency === 0) {
-                    setNextKey((prev) => {
-                        const availableTones = TONES.filter((tone) => !excludedKeys.includes(tone));
-                        return availableTones[Math.floor(Math.random() * availableTones.length)] || "?";
-                    });
-                } else if (beatCount % frequency === leadtime) {
-                    setCurrentKey((prev) => {
+                if (beatCount % frequency === frequency - 1) {
+                    setCurrentKey(() => {
                         if (nextKey !== "?") {
                             setKeyFrequencies((freqs) => ({
                                 ...freqs,
@@ -51,9 +45,15 @@ function App() {
                         return nextKey;
                     });
                     setNextKey("?");
+
+                } else if ((beatCount + leadtime) % frequency === frequency - 1) {
+                    setNextKey(() => {
+                        const availableTones = TONES.filter((tone) => !excludedKeys.includes(tone));
+                        return availableTones[Math.floor(Math.random() * availableTones.length)] || "?";
+                    });
                 }
 
-                setBeatCount((val) => val + 1);
+                setBeatCount((val) => (val + 1)); // Cycle through all elements, including the last one
             }, (60 / bpm) * 1000);
         }
 
@@ -65,7 +65,7 @@ function App() {
             setExcludedKeys((prev) => [...prev, currentKey]);
         }
     };
-
+    console.log([beatCount, leadtime, (beatCount - (leadtime + 1)) % frequency])
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", justifyContent: "start", padding: "0 2rem" }}>
@@ -88,12 +88,13 @@ function App() {
                     display: "flex",
                     flexWrap: "wrap",
                     gap: "2rem",
-                    padding: "2rem",
+                    padding: "1rem",
                 }}
             >
                 {/* Left Column: Controls */}
-                <Card style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <Card style={{ flex: 1, display: "flex", flexDirection: "column",  justifyContent: "space-between" }}>
                     <CardContent style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+                        <div className="font-bold lg:inline-block" style={{textAlign: "left", marginBottom: "1.5rem"}}><span style={{color: "var(--color-primary)"}}>m</span>etronome</div>
                         <div>
                             <Label htmlFor="bpm" style={{marginBottom: "0.5rem"}}>BPM</Label>
                             <Slider
@@ -106,7 +107,79 @@ function App() {
                             />
                             <span>{bpm}</span>
                         </div>
-                        <div style={{display: "flex", gap: "1rem", flexDirection: "row", justifyContent: "space-around"}}>
+
+                    </CardContent>
+                    <div style={{display: "flex", justifyContent: "center", gap: "1rem", padding: "1rem" }}>
+                        <Button onClick={(evt) => {
+                            console.log(evt);
+                            setIsPlaying((prev) => !prev);
+                            setBeatCount(frequency-leadtime);
+                        }}>
+                            {isPlaying ? "Stop" : "Start"}
+                        </Button>
+                        <Button onClick={handleExcludeKey} disabled={!currentKey}>
+                            Exclude Current Key
+                        </Button>
+                    </div>
+                </Card>
+
+                {/* Right Column: Panels */}
+                <Card
+                    style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <CardContent style={{display: "flex", flexDirection: "column", width: "100%"}}>
+                        <div className="font-bold lg:inline-block" style={{textAlign: "left", marginBottom: "1.5rem"}}>
+                            <span style={{color: "var(--color-primary)"}}>k</span>ey
+                        </div>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "1px",
+                            borderBottom: "1px solid var(--border)"
+                        }}>
+                            {/* Current Key Cell */}
+                            <div style={{textAlign: "center", padding: "1rem", borderRight: "1px solid var(--border)"}}>
+                                <div style={{fontSize: "0.8rem", fontWeight: "bold", marginBottom: "0.5rem"}}>Current
+                                </div>
+                                <div style={{fontSize: "2rem", fontWeight: "bold"}}>{currentKey || "_"}</div>
+                            </div>
+                            {/* Next Key Cell */}
+                            <div style={{textAlign: "center", padding: "1rem"}}>
+                                <div style={{fontSize: "0.8rem", fontWeight: "bold", marginBottom: "0.5rem"}}>Next</div>
+                                <div style={{fontSize: "2rem", fontWeight: "bold"}}>{nextKey || "?"}</div>
+                            </div>
+                        </div>
+
+                        <div style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: "0.5rem",
+                            margin: "1rem auto",
+                            flexWrap: "wrap"
+                        }}>
+                            {Array.from({length: frequency}, (_, i) => (
+                                <div
+                                    key={i}
+                                    style={{
+                                        width: "20px",
+                                        height: "20px",
+                                        borderRadius: "50%",
+                                        backgroundColor: (beatCount % frequency === i) ? "var(--color-primary)" : "var(--muted)",
+                                        transition: "background-color 0.2s ease",
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <div style={{
+                            display: "flex",
+                            gap: "1rem",
+                            flexDirection: "row",
+                            justifyContent: "space-around"
+                        }}>
                             <div>
                                 <Label htmlFor="frequency" style={{marginBottom: "0.5rem"}}>Frequency</Label>
                                 <Input
@@ -133,66 +206,8 @@ function App() {
                             </div>
                         </div>
                     </CardContent>
-                    <div style={{display: "flex", justifyContent: "center", gap: "1rem", padding: "1rem" }}>
-                        <Button onClick={() => setIsPlaying((prev) => !prev)}>
-                            {isPlaying ? "Stop" : "Start"}
-                        </Button>
-                        <Button onClick={handleExcludeKey} disabled={!currentKey}>
-                            Exclude Current Key
-                        </Button>
-                    </div>
-                </Card>
-
-                {/* Right Column: Panels */}
-                <Card
-                    style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CardContent style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "100%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Label>Next Key</Label>
-                            <span>{nextKey}</span>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Label>Current Key</Label>
-                            <span>{currentKey || "None"}</span>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Label>Excluded Keys</Label>
-                            <span>{excludedKeys.join(", ") || "None"}</span>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Label>Current Beat</Label>
-                            <span>{(beatCount % frequency) + 1}/{frequency}</span>
-                        </div>
-                    </CardContent>
                 </Card>
             </div>
-            <Card>
-                <CardContent style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
-                    {/* Existing panels... */}
-                    <div style={{display: "flex", justifyContent: "center", gap: "0.5rem", marginTop: "1rem"}}>
-                        {Array.from({length: frequency}, (_, i) => (
-                            <div
-                                key={i}
-                                style={{
-                                    width: "20px",
-                                    height: "20px",
-                                    borderRadius: "50%",
-                                    backgroundColor: (beatCount % frequency) === i ? "var(--neon-green)" : "var(--muted)",
-                                    transition: "background-color 0.2s ease",
-                                }}
-                            />
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-
         </div>
     );
 }
