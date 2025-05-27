@@ -6,6 +6,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import "./App.css";
+import RainbowText from "@/components/RainbowText.tsx";
 
 // Import the audio file
 const metronomeSound = "/public/Perc_MetronomeQuartz_hi.wav";
@@ -81,19 +82,14 @@ function App() {
     console.log([beatCount, frequency, leadtime])
     return (
         <div style={{display: "flex", flexDirection: "column", position: "relative"}}>
-            <div style={{display: "flex", justifyContent: "start", padding: "0 2rem"}}>
-                <div className="font-bold lg:inline-block">
-                    <span style={{color: "var(--neon-green)"}}>m</span>
-                    <span style={{color: "var(--neon-pink)"}}>o</span>
-                    <span style={{color: "var(--neon-blue)"}}>o</span>
-                    <span style={{color: "var(--neon-yellow)"}}>n</span>
-                    <span style={{color: "var(--neon-orange)"}}>-</span>
-                    <span style={{color: "var(--neon-green)"}}>m</span>
-                    <span style={{color: "var(--neon-pink)"}}>e</span>
-                    <span style={{color: "var(--neon-blue)"}}>t</span>
-                    <span style={{color: "var(--neon-yellow)"}}>e</span>
-                    <span style={{color: "var(--neon-orange)"}}>r</span>
-                </div>
+            <div
+                style={{display: "flex", justifyContent: "start", padding: "0 2rem"}}>
+                <RainbowText
+                    className="font-bold lg:inline-block"
+                    colors={["green", "pink", "blue", "yellow", "orange"]
+                        .map((c) => `var(--neon-${c})`)}
+                    text="moon-meter"/>
+
             </div>
             <div
                 className="App"

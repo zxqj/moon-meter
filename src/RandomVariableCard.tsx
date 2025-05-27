@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import {useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,18 +11,16 @@ type RandomVariableCardProps = {
 };
 
 export function RandomVariableCard({ card, beatCount, updateCard } : RandomVariableCardProps) {
+
     const getNext = ({items, excludedItems} : RandomVariableCardData)  => {
         const availableTones = items.filter((tone) => !excludedItems.includes(tone));
         const t = availableTones[Math.floor(Math.random() * availableTones.length)] || "?";
-        console.log(`next random tone: ${t}`)
         return t;
     }
     useEffect(() => {
+
         const { frequency, leadtime, items, nextItem } = card;
         if (items.length === 0) return;
-        const [bs, fs, ls] = [beatCount, frequency, leadtime].map(String);
-        console.log(`(beatCount, frequency, leadTime) = (${bs}, ${fs}, ${ls})`)
-        console.log(`${String((beatCount + frequency - leadtime) % frequency)}`)
 
         /* The {leadtime} is the number of beats ahead of a change occurring that the
         * user is notified what that change will be.  When the metronome starts,
@@ -30,7 +28,6 @@ export function RandomVariableCard({ card, beatCount, updateCard } : RandomVaria
         * beats ahead.  The user does not start the activity at all until it reaches that number.
         * Then the current key changes every {frequency} beats.  */
         if ((beatCount % frequency) === leadtime){
-            console.log("should be at beginning");
             updateCard(({
                 nextItem,
                 ...o
@@ -41,7 +38,6 @@ export function RandomVariableCard({ card, beatCount, updateCard } : RandomVaria
             }));
 
         } else if ((beatCount % frequency) === 0) {
-            console.log(`Should be in middle: ${String(beatCount)} ${nextItem}`);
             updateCard((c) => ({
                 ...c,
                 nextItem: getNext(card)
@@ -52,7 +48,7 @@ export function RandomVariableCard({ card, beatCount, updateCard } : RandomVaria
     }, [beatCount]);
 
     return (
-        <Card style={{ flex: 1, maxWidth: 300 }}>
+        <Card style={{ flex: 1, maxWidth: 600 }}>
             <CardContent style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <Input value={card.name} onChange={({ target: { value }}) => {
                     updateCard(c => ({ ...c, name: value }))
