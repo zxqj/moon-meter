@@ -12,6 +12,20 @@ import Stop from '@mui/icons-material/Stop';
 import {Fab, IconButton} from "@mui/material";
 
 const metronomeSound = "/public/Perc_MetronomeQuartz_hi.wav";
+
+/*
+    The second card is so I can practice four ii V I chord progressions
+    that are apparently useful to know in jazz.  Technically, I think these
+    chord progressions are, in roman numeral notation.
+    ["ii9 V13 I6/9 (α)", "iiø V-alt i6/9 (α)", "ii9 V9 I6/9 (β)", "iiø V-alt i6/9 (β)"]
+
+    In the key of C, they are
+    (f a c e) (f a b e) (e g a d)
+    (c e f a) (b d f a) (a d e g)
+    (f a♭ c d) (f a♭ b e♭) (e♭ g a d)
+    (c d f a♭) (b e♭ f a♭) (a d e♭ g)
+
+ */
 // Example usage:
 function App() {
     const [cards, setCards] = useState<RandomVariableCardData[]>([
@@ -28,8 +42,8 @@ function App() {
         },
         {
             id: 2,
-            name: "Chord Progression",
-            items: ["ii-9 V7 I6/9 (α)", "iiø V-alt i-6 (α)", "ii-7 V7 I6/9 (β)", "iiø V-alt i-6 (β)"],
+            name: "ii V I",
+            items: ["Major Type 1", "Major Type 2", "Minor Type 1", "Minor Type 2"],
             frequency: 12,
             leadtime: 6,
             nextItem: '?',
@@ -85,9 +99,9 @@ function App() {
             display: "flex", flexDirection: "column", gap: "1rem", padding: "1rem"
         }}>
 
-            <Fab aria-label="add" onClick={addCard} style={{backgroundColor: "var(--color-primary)", color: "var(--color-primary-foreground)", position: "absolute", bottom: 20, right: 20}}>
+            {/*<Fab aria-label="add" onClick={addCard} style={{backgroundColor: "var(--color-primary)", color: "var(--color-primary-foreground)", position: "absolute", bottom: 20, right: 20}}>
                 <Add />
-            </Fab>
+            </Fab>*/}
 
             <div
                 style={{display: "flex", justifyContent: "start", padding: "0 2rem"}}>
@@ -148,9 +162,9 @@ function App() {
                     </CardContent>
                 </Card>
             </div>
-                <div style={{display: "flex", justifyContent: "space-around", gap: "1rem"}}>
+                <div style={{display: "flex", alignItems: "flex-start", justifyContent: "space-evenly", gap: "1rem"}}>
                     {cards.map((card, i) => (
-                        <RandomVariableCard key={card.id} card={card} beatCount={beatCount}
+                        <RandomVariableCard key={i} card={card} beatCount={beatCount}
                                             updateCard={createCardUpdater(i)}/>
                     ))}
                 </div>

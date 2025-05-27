@@ -48,3 +48,10 @@
 #frequency button {
     display: none;
 }
+
+.octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: var(--color-primary);
+}
